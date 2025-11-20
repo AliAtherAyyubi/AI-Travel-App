@@ -2,8 +2,11 @@ import { motion } from "framer-motion";
 import { NavLink } from "./NavLink";
 import { Button } from "./ui/button";
 import { Plane } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const Navigation = () => {
+  const navigate = useNavigate();
+
   return (
     <motion.nav
       className="fixed top-0 left-0 right-0 z-50 bg-glass-bg/30 backdrop-blur-lg border-b border-glass-border"
@@ -46,7 +49,7 @@ const Navigation = () => {
             </NavLink>
           </div>
 
-          <Button variant="neon" size="lg">
+          <Button variant="neon" size="lg" onClick={() => navigate("/signup")}>
             Get Started
           </Button>
         </div>

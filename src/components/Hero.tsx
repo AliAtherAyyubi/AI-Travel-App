@@ -2,8 +2,11 @@ import { motion } from "framer-motion";
 import { Button } from "./ui/button";
 import { Sparkles, ArrowRight } from "lucide-react";
 import FloatingShapes from "./FloatingShapes";
+import { useNavigate } from "react-router-dom";
 
 const Hero = () => {
+  const navigate = useNavigate();
+
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-hero pt-20">
       <FloatingShapes />
@@ -53,11 +56,11 @@ const Hero = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.5 }}
           >
-            <Button variant="neon" size="lg" className="group">
+            <Button variant="neon" size="lg" className="group" onClick={() => navigate("/planner")}>
               Start Planning
               <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </Button>
-            <Button variant="glass" size="lg">
+            <Button variant="glass" size="lg" onClick={() => navigate("/destinations")}>
               Explore Destinations
             </Button>
           </motion.div>
