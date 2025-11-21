@@ -1,13 +1,13 @@
-import { motion } from "framer-motion";
+import { motion, HTMLMotionProps } from "framer-motion";
 import { cn } from "@/lib/utils";
 
-interface GlassCardProps {
+interface GlassCardProps extends Omit<HTMLMotionProps<"div">, "children"> {
   children: React.ReactNode;
   className?: string;
   hover?: boolean;
 }
 
-const GlassCard = ({ children, className, hover = true }: GlassCardProps) => {
+const GlassCard = ({ children, className, hover = true, ...props }: GlassCardProps) => {
   return (
     <motion.div
       className={cn(
@@ -17,6 +17,7 @@ const GlassCard = ({ children, className, hover = true }: GlassCardProps) => {
       )}
       whileHover={hover ? { y: -5, scale: 1.02 } : {}}
       transition={{ duration: 0.3 }}
+      {...props}
     >
       {children}
     </motion.div>
