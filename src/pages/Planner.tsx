@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import GlassCard from "@/components/GlassCard";
@@ -9,6 +9,7 @@ import { MapPin, Calendar, DollarSign, Heart, Share2, Download } from "lucide-re
 
 const Planner = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const formData = location.state || {};
 
   // Mock AI-generated itinerary data
@@ -153,7 +154,11 @@ const Planner = () => {
           <h2 className="text-2xl font-bold mb-6">Recommended Hotels</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {itinerary.hotels.map((hotel, index) => (
-              <GlassCard key={index} className="overflow-hidden p-0">
+              <GlassCard 
+                key={index} 
+                className="overflow-hidden p-0 cursor-pointer transition-transform hover:scale-105"
+                onClick={() => navigate('/hotel-details', { state: { hotel } })}
+              >
                 <img src={hotel.image} alt={hotel.name} className="w-full h-48 object-cover" />
                 <div className="p-6">
                   <h3 className="font-bold text-lg mb-2">{hotel.name}</h3>
