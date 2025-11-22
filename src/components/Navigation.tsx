@@ -3,6 +3,7 @@ import { NavLink } from "./NavLink";
 import { Button } from "./ui/button";
 import { Plane } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { ThemeToggle } from "./ThemeToggle";
 
 const Navigation = () => {
   const navigate = useNavigate();
@@ -49,9 +50,12 @@ const Navigation = () => {
             </NavLink>
           </div>
 
-          <Button variant="neon" size="lg" onClick={() => navigate("/signup")}>
-            Get Started
-          </Button>
+          <div className="flex items-center gap-4">
+            <ThemeToggle />
+            <Button variant="neon" size="lg" onClick={() => navigate("/signup")}>
+              Get Started
+            </Button>
+          </div>
         </div>
       </div>
     </motion.nav>
