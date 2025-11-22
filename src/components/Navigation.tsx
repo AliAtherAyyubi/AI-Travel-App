@@ -1,15 +1,19 @@
 import { motion } from "framer-motion";
 import { NavLink } from "./NavLink";
 import { Button } from "./ui/button";
-import { Plane } from "lucide-react";
+import { Plane, User } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { ThemeToggle } from "./ThemeToggle";
+import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { useState, useEffect } from "react";
 
 const Navigation = () => {
   const navigate = useNavigate();
   const [isVisible, setIsVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
+  
+  // Mock logged in state - set to true to show profile button
+  const [isLoggedIn, setIsLoggedIn] = useState(true);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -72,9 +76,22 @@ const Navigation = () => {
 
           <div className="flex items-center gap-4">
             <ThemeToggle />
-            <Button variant="neon" size="lg" onClick={() => navigate("/signup")}>
-              Get Started
-            </Button>
+            {isLoggedIn ? (
+              <button
+                onClick={() => navigate("/profile")}
+                className="flex items-center gap-2 p-2 rounded-lg hover:bg-glass-bg/50 transition-colors"
+              >
+                <Avatar className="w-8 h-8 border-2 border-primary">
+                  <AvatarImage src="https://api.dicebear.com/7.x/avataaars/svg?seed=John" />
+                  <AvatarFallback>JD</AvatarFallback>
+                </Avatar>
+                <span className="hidden md:inline text-sm font-medium">Profile</span>
+              </button>
+            ) : (
+              <Button variant="neon" size="lg" onClick={() => navigate("/signup")}>
+                Get Started
+              </Button>
+            )}
           </div>
         </div>
       </div>
