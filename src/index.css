@@ -8,6 +8,57 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
+    --background: 0 0% 100%;
+    --foreground: 220 40% 6%;
+
+    --card: 0 0% 98%;
+    --card-foreground: 220 40% 6%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 220 40% 6%;
+
+    --primary: 188 95% 58%;
+    --primary-foreground: 220 40% 6%;
+
+    --secondary: 280 70% 60%;
+    --secondary-foreground: 0 0% 100%;
+
+    --muted: 220 30% 96%;
+    --muted-foreground: 210 20% 40%;
+
+    --accent: 188 95% 58%;
+    --accent-foreground: 220 40% 6%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 220 30% 85%;
+    --input: 220 30% 85%;
+    --ring: 188 95% 58%;
+
+    --radius: 1rem;
+
+    /* Custom design tokens */
+    --neon-glow: 188 95% 58%;
+    --neon-glow-secondary: 280 70% 60%;
+    --glass-bg: 0 0% 95%;
+    --glass-border: 220 30% 80%;
+    
+    /* Gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(188 95% 58% / 0.8), hsl(280 70% 60% / 0.8));
+    --gradient-hero: linear-gradient(180deg, hsl(0 0% 100%), hsl(220 30% 96%));
+    --gradient-card: linear-gradient(135deg, hsl(0 0% 98% / 0.6), hsl(220 30% 96% / 0.4));
+    
+    /* Shadows */
+    --shadow-neon: 0 0 20px hsl(var(--neon-glow) / 0.3), 0 0 40px hsl(var(--neon-glow) / 0.2);
+    --shadow-neon-secondary: 0 0 20px hsl(var(--neon-glow-secondary) / 0.3);
+    --shadow-glass: 0 8px 32px 0 rgba(0, 0, 0, 0.1);
+
+    /* Animations */
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .dark {
     --background: 220 40% 6%;
     --foreground: 210 40% 98%;
 
@@ -36,8 +87,6 @@ All colors MUST be HSL.
     --input: 220 30% 15%;
     --ring: 188 95% 58%;
 
-    --radius: 1rem;
-
     /* Custom design tokens */
     --neon-glow: 188 95% 58%;
     --neon-glow-secondary: 280 70% 60%;
@@ -53,9 +102,6 @@ All colors MUST be HSL.
     --shadow-neon: 0 0 20px hsl(var(--neon-glow) / 0.5), 0 0 40px hsl(var(--neon-glow) / 0.3);
     --shadow-neon-secondary: 0 0 20px hsl(var(--neon-glow-secondary) / 0.5);
     --shadow-glass: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-
-    /* Animations */
-    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
 }
 
