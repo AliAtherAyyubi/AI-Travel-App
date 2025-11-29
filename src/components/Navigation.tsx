@@ -1,10 +1,17 @@
 import { motion } from "framer-motion";
 import { NavLink } from "./NavLink";
 import { Button } from "./ui/button";
-import { Plane, User } from "lucide-react";
+import { Plane, User, Settings, ShoppingBag, LogOut } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { ThemeToggle } from "./ThemeToggle";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "./ui/dropdown-menu";
 import { useState, useEffect } from "react";
 
 const Navigation = () => {
@@ -77,16 +84,31 @@ const Navigation = () => {
           <div className="flex items-center gap-4">
             <ThemeToggle />
             {isLoggedIn ? (
-              <button
-                onClick={() => navigate("/profile")}
-                className="flex items-center gap-2 p-2 rounded-lg hover:bg-glass-bg/50 transition-colors"
-              >
-                <Avatar className="w-8 h-8 border-2 border-primary">
-                  <AvatarImage src="https://api.dicebear.com/7.x/avataaars/svg?seed=John" />
-                  <AvatarFallback>JD</AvatarFallback>
-                </Avatar>
-                <span className="hidden md:inline text-sm font-medium">Profile</span>
-              </button>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <button className="flex items-center gap-2 p-1 rounded-full hover:ring-2 hover:ring-primary/50 transition-all">
+                    <Avatar className="w-9 h-9 border-2 border-primary">
+                      <AvatarImage src="https://api.dicebear.com/7.x/avataaars/svg?seed=John" />
+                      <AvatarFallback>JD</AvatarFallback>
+                    </Avatar>
+                  </button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-48">
+                  <DropdownMenuItem onClick={() => navigate("/profile")}>
+                    <Settings className="mr-2 h-4 w-4" />
+                    Settings
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => navigate("/profile?tab=orders")}>
+                    <ShoppingBag className="mr-2 h-4 w-4" />
+                    Order History
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={() => setIsLoggedIn(false)}>
+                    <LogOut className="mr-2 h-4 w-4" />
+                    Log Out
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             ) : (
               <Button variant="neon" size="lg" onClick={() => navigate("/login")}>
                 Login
