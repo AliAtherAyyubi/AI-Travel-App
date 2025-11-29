@@ -20,7 +20,7 @@ export const ThemeToggle = () => {
       variant="ghost"
       size="icon"
       onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-      className="text-muted-foreground hover:text-primary transition-colors"
+      className="text-muted-foreground hover:text-white transition-colors"
     >
       {theme === "dark" ? (
         <Sun className="h-5 w-5" />
