@@ -88,8 +88,8 @@ const Navigation = () => {
                 <span className="hidden md:inline text-sm font-medium">Profile</span>
               </button>
             ) : (
-              <Button variant="neon" size="lg" onClick={() => navigate("/signup")}>
-                Get Started
+              <Button variant="neon" size="lg" onClick={() => navigate("/login")}>
+                Login
               </Button>
             )}
           </div>
