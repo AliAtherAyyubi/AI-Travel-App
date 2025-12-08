@@ -1,72 +1,174 @@
 import { motion } from "framer-motion";
 import { useLocation, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import GlassCard from "@/components/GlassCard";
 import FloatingShapes from "@/components/FloatingShapes";
 import { Button } from "@/components/ui/button";
-import { MapPin, Calendar, DollarSign, Heart, Share2, Download } from "lucide-react";
+import { MapPin, Calendar, DollarSign, Heart, Share2, Download, Loader2, Sparkles, AlertCircle, Lightbulb } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
+
+interface DayPlan {
+  day: number;
+  title: string;
+  activities: string[];
+  cost: string;
+}
+
+interface Hotel {
+  name: string;
+  price: string;
+  rating: number;
+  description?: string;
+  image?: string;
+}
+
+interface Flight {
+  airline: string;
+  route: string;
+  price: string;
+  duration: string;
+}
+
+interface Itinerary {
+  destination: string;
+  days: string;
+  budget: string;
+  interests: string;
+  summary?: string;
+  dailyPlan: DayPlan[];
+  hotels: Hotel[];
+  flights: Flight[];
+  tips?: string[];
+}
 
 const Planner = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  const { toast } = useToast();
   const formData = location.state || {};
+  
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [itinerary, setItinerary] = useState<Itinerary | null>(null);
 
-  // Mock AI-generated itinerary data
-  const itinerary = {
-    destination: formData.destination || "Paris",
-    days: formData.days || "7",
-    budget: formData.budget || "2000",
-    interests: formData.interests || "Culture, Food, History",
-    dailyPlan: [
-      {
-        day: 1,
-        title: "Arrival & City Orientation",
-        activities: ["Check into hotel", "Visit Eiffel Tower", "Seine River cruise"],
-        cost: "$150",
-      },
-      {
-        day: 2,
-        title: "Art & Culture Day",
-        activities: ["Louvre Museum", "Notre-Dame Cathedral", "Latin Quarter exploration"],
-        cost: "$100",
-      },
-      {
-        day: 3,
-        title: "Historical Landmarks",
-        activities: ["Arc de Triomphe", "Champs-Élysées shopping", "Montmartre & Sacré-Cœur"],
-        cost: "$120",
-      },
-    ],
-    hotels: [
-      {
-        name: "Hotel Le Bristol Paris",
-        price: "$280/night",
-        rating: 4.8,
-        image: "https://images.unsplash.com/photo-1566073771259-6a8506099945",
-      },
-      {
-        name: "Pullman Paris Tour Eiffel",
-        price: "$220/night",
-        rating: 4.6,
-        image: "https://images.unsplash.com/photo-1551882547-ff40c63fe5fa",
-      },
-    ],
-    flights: [
-      {
-        airline: "Air France",
-        route: "NYC → Paris",
-        price: "$650",
-        duration: "7h 30m",
-      },
-      {
-        airline: "Delta Airlines",
-        route: "NYC → Paris",
-        price: "$720",
-        duration: "7h 45m",
-      },
-    ],
-  };
+  useEffect(() => {
+    const generateItinerary = async () => {
+      if (!formData.destination) {
+        setError("No destination provided. Please go back and fill in the form.");
+        setIsLoading(false);
+        return;
+      }
+
+      try {
+        console.log('Calling generate-itinerary with:', formData);
+        
+        const { data, error: funcError } = await supabase.functions.invoke('generate-itinerary', {
+          body: {
+            destination: formData.destination,
+            budget: formData.budget,
+            days: formData.days,
+            interests: formData.interests,
+          }
+        });
+
+        if (funcError) {
+          console.error('Function error:', funcError);
+          throw new Error(funcError.message);
+        }
+
+        if (data.error) {
+          throw new Error(data.error);
+        }
+
+        console.log('Received itinerary:', data);
+        
+        // Add placeholder images for hotels
+        const itineraryWithImages = {
+          ...data,
+          hotels: data.hotels?.map((hotel: Hotel, index: number) => ({
+            ...hotel,
+            image: index === 0 
+              ? "https://images.unsplash.com/photo-1566073771259-6a8506099945"
+              : "https://images.unsplash.com/photo-1551882547-ff40c63fe5fa"
+          })) || []
+        };
+
+        setItinerary(itineraryWithImages);
+        toast({
+          title: "Itinerary Generated!",
+          description: `Your ${formData.days}-day trip to ${formData.destination} is ready.`,
+        });
+      } catch (err) {
+        console.error('Error:', err);
+        const errorMessage = err instanceof Error ? err.message : 'Failed to generate itinerary';
+        setError(errorMessage);
+        toast({
+          title: "Error",
+          description: errorMessage,
+          variant: "destructive",
+        });
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    generateItinerary();
+  }, []);
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-hero">
+        <Navigation />
+        <FloatingShapes />
+        <div className="container mx-auto px-6 pt-28 pb-20 relative z-10 flex flex-col items-center justify-center min-h-[60vh]">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="text-center"
+          >
+            <div className="relative mb-8">
+              <Loader2 className="w-16 h-16 text-primary animate-spin mx-auto" />
+              <Sparkles className="w-8 h-8 text-secondary absolute -top-2 -right-2 animate-pulse" />
+            </div>
+            <h2 className="text-2xl font-bold mb-4">AI is crafting your perfect itinerary...</h2>
+            <p className="text-muted-foreground">
+              Analyzing destinations, finding the best hotels, and planning activities for your {formData.days || 7}-day trip to {formData.destination || "your destination"}
+            </p>
+          </motion.div>
+        </div>
+        <Footer />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gradient-hero">
+        <Navigation />
+        <FloatingShapes />
+        <div className="container mx-auto px-6 pt-28 pb-20 relative z-10 flex flex-col items-center justify-center min-h-[60vh]">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="text-center"
+          >
+            <AlertCircle className="w-16 h-16 text-destructive mx-auto mb-6" />
+            <h2 className="text-2xl font-bold mb-4">Oops! Something went wrong</h2>
+            <p className="text-muted-foreground mb-8">{error}</p>
+            <Button variant="neon" onClick={() => navigate(-1)}>
+              Go Back & Try Again
+            </Button>
+          </motion.div>
+        </div>
+        <Footer />
+      </div>
+    );
+  }
+
+  if (!itinerary) return null;
 
   return (
     <div className="min-h-screen bg-gradient-hero">
@@ -87,7 +189,7 @@ const Planner = () => {
             </span>{" "}
             Itinerary
           </h1>
-          <div className="flex flex-wrap gap-4 text-muted-foreground">
+          <div className="flex flex-wrap gap-4 text-muted-foreground mb-6">
             <div className="flex items-center gap-2">
               <MapPin className="w-4 h-4 text-primary" />
               <span>{itinerary.destination}</span>
@@ -101,6 +203,12 @@ const Planner = () => {
               <span>${itinerary.budget} budget</span>
             </div>
           </div>
+          
+          {itinerary.summary && (
+            <GlassCard className="bg-primary/10 border-primary/30">
+              <p className="text-foreground/90">{itinerary.summary}</p>
+            </GlassCard>
+          )}
         </motion.div>
 
         {/* Daily Itinerary */}
@@ -144,6 +252,31 @@ const Planner = () => {
           </div>
         </motion.div>
 
+        {/* Travel Tips */}
+        {itinerary.tips && itinerary.tips.length > 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.35 }}
+            className="mb-12"
+          >
+            <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
+              <Lightbulb className="w-6 h-6 text-primary" />
+              Travel Tips
+            </h2>
+            <GlassCard>
+              <ul className="space-y-3">
+                {itinerary.tips.map((tip, index) => (
+                  <li key={index} className="flex items-start gap-3 text-muted-foreground">
+                    <span className="text-primary font-bold">{index + 1}.</span>
+                    {tip}
+                  </li>
+                ))}
+              </ul>
+            </GlassCard>
+          </motion.div>
+        )}
+
         {/* Recommended Hotels */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -162,6 +295,9 @@ const Planner = () => {
                 <img src={hotel.image} alt={hotel.name} className="w-full h-48 object-cover" />
                 <div className="p-6">
                   <h3 className="font-bold text-lg mb-2">{hotel.name}</h3>
+                  {hotel.description && (
+                    <p className="text-sm text-muted-foreground mb-3">{hotel.description}</p>
+                  )}
                   <div className="flex items-center justify-between">
                     <span className="text-primary font-semibold">{hotel.price}</span>
                     <span className="text-sm text-muted-foreground">★ {hotel.rating}</span>
