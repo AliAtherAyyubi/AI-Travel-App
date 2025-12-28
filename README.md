@@ -2,7 +2,7 @@
 
 ## Project info
 
-**URL**: https://lovable.dev/projects/4bb1b32f-40c4-4620-a10f-d734e3452dd2
+**URL**: [Live Demo](https://travelworldai.lovable.app/)
 
 ## How can I edit this code?
 
