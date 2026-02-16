@@ -1,10 +1,7 @@
-# 🌍 AI Travel Planner – Frontend (Next.js + TypeScript)
+# 🌍 AI Travel Planner 
 
 A modern **AI-powered travel planning web application (Frontend Only)** built with **Next.js and TypeScript**.  
 This project provides a clean, responsive, and animated UI for an AI Travel Assistant that helps users plan trips, generate itineraries, discover destinations, and get smart travel recommendations.
-
-> ⚠️ This repository contains **frontend only**. No backend or AI model is included.
-
 ---
 
 ## ✨ Features
